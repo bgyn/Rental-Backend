@@ -28,6 +28,6 @@ class RentListView(APIView):
     def get(self,request):
         rentlist = RentList.objects.all()
         serializer = RentListSerializer(rentlist, many=True)
-        return Response()
+        return Response(serializer.data)
 
 
