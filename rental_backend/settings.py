@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-h^%q#d1mnns%7+k$l30w%srex&0x0v45w0fbr4#fs@3bqz$z4k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.verce.app']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -130,7 +130,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-MEDIA_ROOT = 'static/images'
+MEDIA_ROOT = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
