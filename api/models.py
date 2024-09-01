@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 class Category(models.Model):
     categoryName = models.CharField(max_length=200)
+    categoryIcon = models.ImageField(upload_to='icons/', null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
