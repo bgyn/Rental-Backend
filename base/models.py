@@ -5,10 +5,17 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Categories(models.Model):
     category_name = models.CharField(max_length=100, null=True, blank=True)
+    category_image = models.ImageField(upload_to='categoryIcons',null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.category_name
+
+class Rules(models.Model):
+    rule_text = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.text
     
 class RentItem(models.Model):
     title = models.CharField(max_length=100,null=True, blank=True)
@@ -17,8 +24,12 @@ class RentItem(models.Model):
     description = models.TextField()
     quantity = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
-    rating = models.DecimalField(default=0, max_digits=2, decimal_places=1, validators=[MinValueValidator(0),MaxValueValidator(5)])
+    rating = models.DecimalField(default=0, max_digits=1, decimal_places=1, validators=[MinValueValidator(0),MaxValueValidator(5)])
     numOfReviews = models.IntegerField(null=True, blank=True)
+    address= models.CharField(max_length=255,null=True, blank=True)
+    latiude = models.DecimalField(max_digits=9, decimal_places=6,null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6,null=True, blank=True)
+    rules = models.ManyToManyField(Rules, blank=True)
 
     def __str__(self):
         return self.title
