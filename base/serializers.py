@@ -12,6 +12,7 @@ class RuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rules
         fields = ["rule_text"]
+        
 
 class RentItemSerializer(serializers.ModelSerializer):
     itemRules = serializers.SerializerMethodField(read_only = True)

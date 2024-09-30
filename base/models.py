@@ -1,8 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-# Create your models here.
 
+#model for category
 class Categories(models.Model):
     category_name = models.CharField(max_length=100, null=True, blank=True)
     category_image = models.ImageField(upload_to='categoryIcons',null=True, blank=True)
@@ -11,12 +11,15 @@ class Categories(models.Model):
     def __str__(self):
         return self.category_name
 
+# model for rules 
 class Rules(models.Model):
     rule_text = models.CharField(max_length=255)
-
+    
     def __str__(self):
         return self.rule_text
-    
+
+
+# model for rentitem
 class RentItem(models.Model):
     title = models.CharField(max_length=100,null=True, blank=True)
     price = models.DecimalField(max_digits=4,decimal_places=2, null=True, blank=True)

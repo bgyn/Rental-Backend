@@ -6,10 +6,6 @@ from base.models import Categories,Rules,RentItem
 from base.serializers import CategorySerializer,RuleSerializer,RentItemSerializer
 from rest_framework.response import Response
 
-# Create your views here.
-
-def index(request):
-    return HttpResponse("This works")
 
 
 class CategoryView(ListCreateAPIView):
