@@ -7,7 +7,6 @@ from base.serializers import CategorySerializer,RuleSerializer,RentItemSerialize
 from rest_framework.response import Response
 
 
-
 class CategoryView(ListCreateAPIView):
     queryset = Categories.objects.all()
     serializer_class = CategorySerializer
