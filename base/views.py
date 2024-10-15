@@ -5,6 +5,7 @@ from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIVi
 from base.models import Categories,Rules,RentItem
 from base.serializers import CategorySerializer,RuleSerializer,RentItemSerializer
 from rest_framework.response import Response
+from rest_framework import permissions
 
 
 class CategoryView(ListCreateAPIView):

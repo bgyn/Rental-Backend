@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 #model for category
 class Categories(models.Model):
-    category_name = models.CharField(max_length=100, null=True, blank=True)
+    category_name = models.CharField(max_length=100, null=True, blank=True, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
