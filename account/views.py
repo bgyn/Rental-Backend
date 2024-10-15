@@ -13,12 +13,6 @@ def register(request):
 
         if serializer.is_valid():
             account = serializer.save()
-
-            data['response'] = "Registration successful"
-            # data['username'] = account.email
-            data['email'] = account.email
-            data['firstname'] = account.first_name
-            data['lastname'] = account.last_name
             data['isAdmin'] = account.is_staff
             
             token = Token.objects.get(user = account).key
