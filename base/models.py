@@ -21,7 +21,7 @@ class Rules(models.Model):
 # model for rentitem
 class RentItem(models.Model):
     title = models.CharField(max_length=100,null=True, blank=True)
-    category = models.ForeignKey(Categories, on_delete=models.CASCADE)
+    category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name='rent_category')
     price = models.CharField(max_length=30, null=True, blank=True)
     thumbnailImage = models.ImageField(upload_to='thumbnails',null=True, blank=True)
     description = models.TextField()
