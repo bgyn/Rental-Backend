@@ -6,7 +6,7 @@ class RentItemSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(queryset = Categories.objects.all())
     class Meta:
         model = RentItem
-        fields = ["id",'title','price','thumbnailImage','description','quantity','created_at','rating','numOfReviews','address','latitude','longitude','itemRules','category']
+        fields = ["id",'title','price','thumbnailImage','description','inStock','created','rating','numOfReviews','address','latitude','longitude','itemRules','category']
 
     # def get_category(self,obj):
     #     return obj.category.id

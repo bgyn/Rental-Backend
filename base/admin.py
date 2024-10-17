@@ -4,4 +4,9 @@ from base.models import Categories,Rules,RentItem
 # Register your models here.
 admin.site.register(Categories)
 admin.site.register(Rules)
-admin.site.register(RentItem)
+
+@admin.register(RentItem)
+class RentItemAdmin(admin.ModelAdmin):
+    list_display = ['title','price','rating','inStock','rating','numOfReviews','status']
+    list_filter = ['created','status']
+    search_fields = ['title']

@@ -18,21 +18,43 @@ class Rules(models.Model):
         return self.rule_text
 
 
+class VerifiedManager(models.Manager):
+    def get_queryset(self) -> models.QuerySet:
+        return (
+            super().get_queryset().filter(status = RentItem.Status.VERIFIED)
+        )
+
+
 # model for rentitem
 class RentItem(models.Model):
+    class Status(models.TextChoices):
+        VERIFIED = 'VF','Verified'
+        NOTVERIFIED = 'NVF','Not Verified'
+
     title = models.CharField(max_length=100,null=True, blank=True)
     category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name='rent_category')
     price = models.CharField(max_length=30, null=True, blank=True)
     thumbnailImage = models.ImageField(upload_to='thumbnails',null=True, blank=True)
     description = models.TextField()
-    quantity = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    inStock = models.IntegerField()
+    created = models.DateTimeField(auto_now_add=True)
     rating = models.DecimalField(default=0, max_digits=2, decimal_places=1, validators=[MinValueValidator(0),MaxValueValidator(5)])
     numOfReviews = models.IntegerField(null=True, blank=True)
     address= models.CharField(max_length=255,null=True, blank=True)
     latitude = models.CharField(max_length=20,null=True, blank=True)
     longitude = models.CharField(max_length=20,null=True, blank=True)
     rules = models.ManyToManyField(Rules, blank=True)
+    status = models.CharField(
+        max_length=4,
+        choices = Status,
+        default= Status.NOTVERIFIED
+    )
+
+    objects = models.Manager()
+    verified = VerifiedManager()
+
+    class Meta:
+        ordering = ['-created']
 
     def __str__(self):
         return self.title

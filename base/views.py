@@ -18,10 +18,10 @@ class RuleView(ListCreateAPIView):
     serializer_class = RuleSerializer
 
 class RentItemView(ListCreateAPIView):
-    queryset = RentItem.objects.all()
+    queryset = RentItem.verified.all()
     serializer_class = RentItemSerializer
     
 
 class RentItemDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = RentItem.objects.all()
+    queryset = RentItem.verified.all()
     serializer_class = RentItemSerializer
