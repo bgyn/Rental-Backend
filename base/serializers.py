@@ -24,7 +24,7 @@ class CategorySerializer(serializers.ModelSerializer):
     rent_category = RentItemSerializer(many=True , read_only = True)
     class Meta:
         model = Categories
-        fields = ["id","category_name"]
+        fields = ["id","category_name",'rent_category']
 
 
 class RuleSerializer(serializers.ModelSerializer):
