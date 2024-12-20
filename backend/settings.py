@@ -169,7 +169,7 @@ CORS_ALLOW_HEADERS = (
     "x-requested-with",
 )
 
-#for jwt authentication
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
