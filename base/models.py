@@ -61,3 +61,11 @@ class RentItem(models.Model):
     def __str__(self):
         return self.title
     
+
+class UserListing(models.Model):
+    users = models.ForeignKey(to=User,on_delete=models.CASCADE)
+    rent_items = models.ForeignKey(to=RentItem,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.users.username} => {self.rent_items.title}"
+    

@@ -1,16 +1,16 @@
 from rest_framework import serializers
-from base.models import Categories,Rules,RentItem,User
+from base.models import Categories,Rules,RentItem,User,UserListing
 
 class RentItemSerializer(serializers.ModelSerializer):
     itemRules = serializers.SerializerMethodField(read_only = True)
     category = serializers.PrimaryKeyRelatedField(queryset = Categories.objects.all())
-    userId = serializers.PrimaryKeyRelatedField(read_only = True)
+    userId = serializers.SerializerMethodField(read_only = True)
     class Meta:
         model = RentItem
-        fields = ["id",'title','price','thumbnailImage','description','inStock','created','rating','numOfReviews','address','latitude','longitude','itemRules','category','userId']
+        fields = ["id",'title','price','thumbnailImage','description','inStock','created','rating','numOfReviews','address','latitude','longitude','itemRules','category','userId','status']
 
-    # def get_category(self,obj):
-    #     return obj.category.id
+    def get_userId(self,obj):
+        return obj.users.id
 
     def create(self,validated_data):
         category = validated_data.pop('category')
@@ -32,5 +32,11 @@ class RuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rules
         fields = ["rule_text"]
+
+
+class UserListingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserListing
+        fields = "__all__"
         
 

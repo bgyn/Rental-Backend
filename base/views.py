@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
-from base.models import Categories,Rules,RentItem
-from base.serializers import CategorySerializer,RuleSerializer,RentItemSerializer
+from base.models import Categories,Rules,RentItem,UserListing
+from base.serializers import CategorySerializer,RuleSerializer,RentItemSerializer,UserListingSerializer
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import status
@@ -31,7 +31,10 @@ class RentItemView(APIView):
         if request.user.is_authenticated:
             serializer = RentItemSerializer(data = request.data)   
             if serializer.is_valid():
-                serializer.save()
+                # profile = serializer.save(commit = False)
+                # profile.users = request.user
+                # profile.save()
+                serializer.save(users = request.user)
                 return Response(serializer.data,status=status.HTTP_201_CREATED)
         else:
             return Response({'error':'You are not able to post data. Please login first.'},status=status.HTTP_401_UNAUTHORIZED)
@@ -40,3 +43,11 @@ class RentItemView(APIView):
 class RentItemDetailView(RetrieveUpdateDestroyAPIView):
     queryset = RentItem.verified.all()
     serializer_class = RentItemSerializer
+
+
+class UserListingView(APIView):
+    def get(self,request):
+        queryset = RentItem.objects.filter(users = request.user)
+        serializer = RentItemSerializer(queryset,many=True)
+        return Response(serializer.data)
+
