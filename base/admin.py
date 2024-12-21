@@ -9,4 +9,5 @@ admin.site.register(Rules)
 class RentItemAdmin(admin.ModelAdmin):
     list_display = ['title','price','rating','inStock','rating','numOfReviews','status']
     list_filter = ['created','status']
+    list_editable = ['status']
     search_fields = ['title']
