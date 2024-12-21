@@ -1,12 +1,13 @@
 from rest_framework import serializers
-from base.models import Categories,Rules,RentItem
+from base.models import Categories,Rules,RentItem,User
 
 class RentItemSerializer(serializers.ModelSerializer):
     itemRules = serializers.SerializerMethodField(read_only = True)
     category = serializers.PrimaryKeyRelatedField(queryset = Categories.objects.all())
+    userId = serializers.PrimaryKeyRelatedField(read_only = True)
     class Meta:
         model = RentItem
-        fields = ["id",'title','price','thumbnailImage','description','inStock','created','rating','numOfReviews','address','latitude','longitude','itemRules','category']
+        fields = ["id",'title','price','thumbnailImage','description','inStock','created','rating','numOfReviews','address','latitude','longitude','itemRules','category','userId']
 
     # def get_category(self,obj):
     #     return obj.category.id

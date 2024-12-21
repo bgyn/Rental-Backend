@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
+from django.contrib.auth.models import User
 
 
 #model for category
@@ -31,7 +32,7 @@ class RentItem(models.Model):
     class Status(models.TextChoices):
         VERIFIED = 'VF','Verified'
         NOTVERIFIED = 'NVF','Not Verified'
-
+    users = models.ForeignKey(to=User,on_delete=models.CASCADE)
     title = models.CharField(max_length=100,null=True, blank=True)
     category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name='rent_category')
     price = models.CharField(max_length=30, null=True, blank=True)
