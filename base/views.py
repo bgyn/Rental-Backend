@@ -53,3 +53,10 @@ class BookingView(ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
+class BookingList(APIView):
+    def get(self,request):
+        queryset = Booking.objects.filter(user=request.user)
+        serializer = BookingSerializer(queryset,many=True)
+        return Response(serializer.data)
+
+
