@@ -87,4 +87,4 @@ class Booking(models.Model):
         super().save(*args,**kwargs)
 
     def __str__(self):
-        return f"{self.user.username} => {self.rent_item.name}"
+        return f"{self.user.username} => {self.rent_item.title}"
