@@ -41,7 +41,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
     lastname = serializers.CharField(source = 'user.last_name',read_only = True)
     email = serializers.EmailField(source = 'user.email',read_only = True)
     date_of_birth = serializers.DateField(required = True)
+    user_id = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = UserProfile
-        fields = ['firstname','lastname','email','address','phone','profile_pic','about_you','date_of_birth','gender','latitude','longitude']
+        fields = ['user_id','firstname','lastname','email','address','phone','profile_pic','about_you','date_of_birth','gender','latitude','longitude']
+
+    def get_user_id(self,obj):
+        return obj.user.id

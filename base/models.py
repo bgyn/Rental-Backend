@@ -31,7 +31,7 @@ class RentItem(models.Model):
     class Status(models.TextChoices):
         VERIFIED = 'VF','Verified'
         NOTVERIFIED = 'NVF','Not Verified'
-    users = models.ForeignKey(to=User,on_delete=models.CASCADE)
+    owner = models.ForeignKey(to=User,on_delete=models.CASCADE)
     title = models.CharField(max_length=100,null=True, blank=True)
     category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name='rent_category')
     price = models.CharField(max_length=30, null=True, blank=True)
@@ -59,10 +59,32 @@ class RentItem(models.Model):
         return self.title
     
 
-class UserListing(models.Model):
-    users = models.ForeignKey(to=User,on_delete=models.CASCADE)
-    rent_items = models.ForeignKey(to=RentItem,on_delete=models.CASCADE)
+class Booking(models.Model):
+    """
+    Define the booking models of the rentItems
+    """
+    class Status(models.TextChoices):
+        PENDING = 'pending','pending'
+        ACCEPTED = 'accepted','accepted'
+        NOTACCEPTED = 'notAccepted','notAccepted'
+    user = models.ForeignKey(to=User,on_delete=models.CASCADE)
+    rent_item = models.ForeignKey(to=RentItem,on_delete=models.CASCADE,related_name='bookings')
+    start_date = models.DateField()
+    end_date = models.DateField()
+    status = models.CharField(
+        max_length=200,
+        choices=Status.choices,
+        default=Status.PENDING
+    )
+    total_price = models.CharField(max_length=30, null=True, blank=True)
+
+
+    def save(self,*args,**kwargs):
+        # calculate days
+        days = (self.end_date - self.start_date).days+1
+        totalPrice= days * float(self.rent_item.price)
+        self.total_price = str(totalPrice)
+        super().save(*args,**kwargs)
 
     def __str__(self):
-        return f"{self.users.username} => {self.rent_items.title}"
-    
+        return f"{self.user.username} => {self.rent_item.name}"

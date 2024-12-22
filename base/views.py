@@ -1,9 +1,7 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
-from base.models import Categories,Rules,RentItem,UserListing
-from base.serializers import CategorySerializer,RuleSerializer,RentItemSerializer,UserListingSerializer
+from base.models import Categories,Rules,RentItem,Booking
+from base.serializers import CategorySerializer,RuleSerializer,RentItemSerializer,BookingSerializer
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import status
@@ -18,7 +16,6 @@ class CategoryView(ListCreateAPIView):
 class RuleView(ListCreateAPIView):
     queryset = Rules.objects.all()
     serializer_class = RuleSerializer
-    # permission_classes = [permissions.IsAuthenticated]
 
 
 class RentItemView(ListCreateAPIView):
@@ -33,7 +30,7 @@ class RentItemView(ListCreateAPIView):
         Customize the save logic for the Post requests
         This is called automatically when the serializer is saved.
         """
-        serializer.save(users = self.request.user)
+        serializer.save(owner = self.request.user)
 
 
 class RentItemDetailView(RetrieveUpdateDestroyAPIView):
@@ -46,4 +43,13 @@ class UserListingView(APIView):
         queryset = RentItem.objects.filter(users = request.user)
         serializer = RentItemSerializer(queryset,many=True)
         return Response(serializer.data)
+
+class BookingView(ListCreateAPIView):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 

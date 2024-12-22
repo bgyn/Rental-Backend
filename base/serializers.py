@@ -1,16 +1,16 @@
 from rest_framework import serializers
-from base.models import Categories,Rules,RentItem,User,UserListing
+from base.models import Categories,Rules,RentItem,Booking
 
 class RentItemSerializer(serializers.ModelSerializer):
     itemRules = serializers.SerializerMethodField(read_only = True)
     category = serializers.PrimaryKeyRelatedField(queryset = Categories.objects.all())
-    userId = serializers.SerializerMethodField(read_only = True)
+    owner = serializers.SerializerMethodField(read_only = True)
     class Meta:
         model = RentItem
-        fields = ["id",'title','price','thumbnailImage','description','inStock','created','address','latitude','longitude','itemRules','category','userId','status']
+        fields = ["id",'title','price','thumbnailImage','description','inStock','created','address','latitude','longitude','itemRules','category','owner','status']
 
-    def get_userId(self,obj):
-        return obj.users.id
+    def get_owner(self,obj):
+        return obj.owner.id
 
     def create(self,validated_data):
         category = validated_data.pop('category')
@@ -34,9 +34,23 @@ class RuleSerializer(serializers.ModelSerializer):
         fields = ["rule_text"]
 
 
-class UserListingSerializer(serializers.ModelSerializer):
+class BookingSerializer(serializers.ModelSerializer):
+    total_price = serializers.ReadOnlyField()
+    user_id = serializers.SerializerMethodField(read_only = True)
     class Meta:
-        model = UserListing
-        fields = "__all__"
-        
+        model = Booking
+        fields = ['id','user_id','rent_item','start_date','end_date','total_price','status']
+    
+    def get_user_id(self,obj):
+        return obj.user.id
 
+    def validate(self, data):
+        # ensure end date is after start date
+        if data['end_date'] <= data['start_date']:
+            raise serializers.ValidationError("End date must be after start date")
+        
+        # check if the item is available during the selected dates 
+        overlapping_bookings = Booking.objects.filter(rent_item = data['rent_item'], start_date__lt=data['end_date'],end_date__gt=data['start_date'])
+        if overlapping_bookings.exists():
+            raise serializers.ValidationError("This item is already booked for the selected date.")
+        return data
