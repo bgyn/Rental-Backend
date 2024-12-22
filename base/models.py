@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
 from django.contrib.auth.models import User
 
@@ -40,8 +39,6 @@ class RentItem(models.Model):
     description = models.TextField()
     inStock = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
-    rating = models.DecimalField(default=0, max_digits=2, decimal_places=1, validators=[MinValueValidator(Decimal(0.0)),MaxValueValidator(Decimal(5.0))])
-    numOfReviews = models.IntegerField(null=True, blank=True)
     address= models.CharField(max_length=255,null=True, blank=True)
     latitude = models.CharField(max_length=20,null=True, blank=True)
     longitude = models.CharField(max_length=20,null=True, blank=True)

@@ -7,7 +7,7 @@ admin.site.register(Rules)
 
 @admin.register(RentItem)
 class RentItemAdmin(admin.ModelAdmin):
-    list_display = ['users','title','price','rating','inStock','rating','numOfReviews','status']
+    list_display = ['users','title','price','inStock','status']
     list_filter = ['created','status']
     list_editable = ['status']
     search_fields = ['title']

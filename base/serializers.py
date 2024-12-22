@@ -7,7 +7,7 @@ class RentItemSerializer(serializers.ModelSerializer):
     userId = serializers.SerializerMethodField(read_only = True)
     class Meta:
         model = RentItem
-        fields = ["id",'title','price','thumbnailImage','description','inStock','created','rating','numOfReviews','address','latitude','longitude','itemRules','category','userId','status']
+        fields = ["id",'title','price','thumbnailImage','description','inStock','created','address','latitude','longitude','itemRules','category','userId','status']
 
     def get_userId(self,obj):
         return obj.users.id

@@ -7,6 +7,7 @@ from base.serializers import CategorySerializer,RuleSerializer,RentItemSerialize
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import status
+from rest_framework import filters
 
 
 class CategoryView(ListCreateAPIView):
@@ -20,25 +21,20 @@ class RuleView(ListCreateAPIView):
     # permission_classes = [permissions.IsAuthenticated]
 
 
+class RentItemView(ListCreateAPIView):
+    queryset = RentItem.verified.all()
+    serializer_class = RentItemSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title']
 
-class RentItemView(APIView):
-    def get(self,request):
-        queryset = RentItem.verified.all()
-        serializer = RentItemSerializer(queryset, many= True)
-        return Response(serializer.data)
-    
-    def post(self,request):
-        if request.user.is_authenticated:
-            serializer = RentItemSerializer(data = request.data)   
-            if serializer.is_valid():
-                # profile = serializer.save(commit = False)
-                # profile.users = request.user
-                # profile.save()
-                serializer.save(users = request.user)
-                return Response(serializer.data,status=status.HTTP_201_CREATED)
-        else:
-            return Response({'error':'You are not able to post data. Please login first.'},status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        """
+        Customize the save logic for the Post requests
+        This is called automatically when the serializer is saved.
+        """
+        serializer.save(users = self.request.user)
+
 
 class RentItemDetailView(RetrieveUpdateDestroyAPIView):
     queryset = RentItem.verified.all()
