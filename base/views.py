@@ -40,7 +40,7 @@ class RentItemDetailView(RetrieveUpdateDestroyAPIView):
 
 class UserListingView(APIView):
     def get(self,request):
-        queryset = RentItem.objects.filter(users = request.user)
+        queryset = RentItem.objects.filter(owner = request.user)
         serializer = RentItemSerializer(queryset,many=True)
         return Response(serializer.data)
 
