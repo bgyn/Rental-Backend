@@ -9,7 +9,7 @@ class Categories(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.category_name
+        return f"{self.category_name}"
 
 # model for rules 
 class Rules(models.Model):
@@ -56,7 +56,7 @@ class RentItem(models.Model):
         ordering = ['-created']
 
     def __str__(self):
-        return self.title
+        return f"{self.title}"
     
 
 class Booking(models.Model):
