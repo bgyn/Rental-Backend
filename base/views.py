@@ -69,17 +69,17 @@ class NearestRentItemAPIView(APIView):
         user = request.user
 
         if not user.is_authenticated:
-            return Response({'error':'Authentication required.'},status=401)
+            return Response({'error':'Authentication required.'},status=status.HTTP_401_UNAUTHORIZED)
         
         try:
             user_profile = UserProfile.objects.get(user=user)
             user_lat = user_profile.latitude
             user_lng = user_profile.longitude
         except UserProfile.DoesNotExist:
-            return Response({'error':'User profile not found for the user'},status=404)
+            return Response({'error':'User profile not found for the user'},status=status.HTTP_404_NOT_FOUND)
         
         if not user_lat and not user_lng:
-            return Response({'error':'User latitude and longitude are not set in the profile'},status=400)
+            return Response({'error':'User latitude and longitude are not set in the profile'},status=status.HTTP_400_BAD_REQUEST)
         
         # filter rent_items with valid latitude longitude and verified status
 
@@ -142,17 +142,17 @@ class UpdateBookingStatusView(APIView):
         try:
             booking = Booking.objects.get(pk = booking_id)
             if booking.rent_item.owner != request.user:
-                return Response({'error': 'You are not authorized to update this booking'},status=403)
+                return Response({'error': 'You are not authorized to update this booking'},status=status.HTTP_403_FORBIDDEN)
             
             #status can only update once
             if booking.status != booking.Status.PENDING:
-                return Response({'error':'You can only update the status once.'})
+                return Response({'error':'You can only update the status once.'},status=403)
             
             serializer = UpdateBookingStatusSerializer(booking,data= request.data,partial = True)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data,status=200)
-            return Response(serializer.errors,status=400)
+                return Response(serializer.data)
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
         except Booking.DoesNotExist:
             return Response({'error':"Booking not found"})
