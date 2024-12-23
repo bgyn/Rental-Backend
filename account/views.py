@@ -55,6 +55,7 @@ class UserProfileView(APIView):
         except Exception as e:
             return Response({'error': str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 class UserProfileDetailView(APIView):
     def get(self,request,user_id):
         user_profile = UserProfile.objects.get(id = user_id)

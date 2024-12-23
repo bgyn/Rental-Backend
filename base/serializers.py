@@ -54,3 +54,19 @@ class BookingSerializer(serializers.ModelSerializer):
         if overlapping_bookings.exists():
             raise serializers.ValidationError("This item is already booked for the selected date.")
         return data
+    
+
+class UpdateBookingStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = ['status']
+        extra_kwargs = {
+            'status':{
+                'required': True
+            }
+        }
+
+    def validate_status(self,value):
+        if value not in [choice[0] for choice in Booking.Status.choices]:
+            raise serializers.ValidationError("Invalid status value")
+        return value

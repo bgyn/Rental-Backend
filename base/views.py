@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
 from base.models import Categories,Rules,RentItem,Booking
-from base.serializers import CategorySerializer,RuleSerializer,RentItemSerializer,BookingSerializer
+from base.serializers import CategorySerializer,RuleSerializer,RentItemSerializer,BookingSerializer,UpdateBookingStatusSerializer
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import status
@@ -112,3 +112,48 @@ class NearestRentItemAPIView(APIView):
 
         return Response({'rent_items':serialized_items})
 
+
+class UpdateBookingStatusView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self,request,booking_id):
+        """
+        Get the details of booking if the user is the owner of associated rent item
+        """
+        try:
+            booking = Booking.objects.get(pk=booking_id)
+            if booking.rent_item.owner != request.user:
+                return Response({'error': "You are not authorized to view this booking"})
+            return Response({
+                "id": booking.id,
+                "rent_item": booking.rent_item.title,
+                "user": f"{booking.user.first_name} {booking.user.last_name}",
+                "start_date": booking.start_date,
+                "end_date": booking.end_date,
+                "status": booking.status,
+                "total_price": booking.total_price
+            })
+        except Booking.DoesNotExist:
+            return Response({'error':"Booking not found"})
+        
+    def patch(self,request,booking_id):
+        """
+        update the status of the booking if user is the owner of associated items
+        """
+        try:
+            booking = Booking.objects.get(pk = booking_id)
+            if booking.rent_item.owner != request.user:
+                return Response({'error': 'You are not authorized to update this booking'},status=403)
+            
+            #status can only update once
+            if booking.status != booking.Status.PENDING:
+                return Response({'error':'You can only update the status once.'})
+            
+            serializer = UpdateBookingStatusSerializer(booking,data= request.data,partial = True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,status=200)
+            return Response(serializer.errors,status=400)
+
+        except Booking.DoesNotExist:
+            return Response({'error':"Booking not found"})
+        
