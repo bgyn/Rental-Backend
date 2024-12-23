@@ -8,6 +8,8 @@ from rest_framework import status
 from account import signals
 from .serializers import UserProfileSerializer
 from .models import UserProfile
+from base.models import RentItem
+from base.serializers import RentItemSerializer
 
 @api_view(['POST'])
 def register(request):
@@ -52,3 +54,18 @@ class UserProfileView(APIView):
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class UserProfileDetailView(APIView):
+    def get(self,request,user_id):
+        user_profile = UserProfile.objects.get(id = user_id)
+        user_serializer = UserProfileSerializer(user_profile)
+        user_data = user_serializer.data
+        rent_items = RentItem.objects.filter(owner = user_data['user_id'])
+        rent_serializer = RentItemSerializer(rent_items,many=True)
+        posted_rent_data = rent_serializer.data
+        return Response({
+            'name': f"{user_data['firstname']} {user_data['lastname']}",
+            'profile_pic': user_data['profile_pic'],
+            'address': user_data['address'],
+            'rent_items': posted_rent_data,
+        })

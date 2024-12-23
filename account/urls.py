@@ -6,4 +6,5 @@ urlpatterns = [
     path('login/',obtain_auth_token, name="login"),
     path('register/',views.register, name = 'register'),
     path('profile/',views.UserProfileView.as_view(),name='user-profile'),
+    path('profile/<int:user_id>/',views.UserProfileDetailView.as_view(),name='user-detail'),
 ]
