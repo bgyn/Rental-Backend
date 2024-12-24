@@ -37,12 +37,16 @@ class RuleSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     total_price = serializers.ReadOnlyField()
     user_id = serializers.SerializerMethodField(read_only = True)
+    title = serializers.SerializerMethodField(read_only = True)
     class Meta:
         model = Booking
-        fields = ['id','user_id','rent_item','start_date','end_date','total_price','status']
+        fields = ['id','user_id','rent_item','title','start_date','end_date','total_price','status']
     
     def get_user_id(self,obj):
         return obj.user.id
+    
+    def get_title(self,obj):
+        return obj.rent_item.title
 
     def validate(self, data):
         # ensure end date is after start date
