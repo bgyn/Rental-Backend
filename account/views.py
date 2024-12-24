@@ -58,16 +58,21 @@ class UserProfileView(APIView):
 
 class UserProfileDetailView(APIView):
     def get(self,request,user_id):
-        user_profile = UserProfile.objects.get(id = user_id)
-        user_serializer = UserProfileSerializer(user_profile)
-        user_data = user_serializer.data
-        rent_items = RentItem.objects.filter(owner = user_data['user_id'])
+        user_profile = UserProfile.objects.get(user__id = user_id)
+        # user_serializer = UserProfileSerializer(user_profile)
+        # user_data = user_serializer.data
+        print(user_profile.about_you)
+        rent_items = RentItem.objects.filter(owner = user_profile.user)
         rent_serializer = RentItemSerializer(rent_items,many=True)
         posted_rent_data = rent_serializer.data
+        print(posted_rent_data)
+        # ensure profile pic exist or not 
+        profile_pic_url = user_profile.profile_pic.url if user_profile.profile_pic else None
         return Response({
-            'name': f"{user_data['firstname']} {user_data['lastname']}",
-            'profile_pic': user_data['profile_pic'],
-            'address': user_data['address'],
-            'phone_number':user_data['phone'],
+            "id": user_profile.id,
+            'name': f"{user_profile.user.first_name} {user_profile.user.last_name}",
+            'profile_pic': profile_pic_url,
+            'address': user_profile.address,
+            'phone_number':user_profile.phone,
             'rent_items': posted_rent_data,
         })
