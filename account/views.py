@@ -68,5 +68,6 @@ class UserProfileDetailView(APIView):
             'name': f"{user_data['firstname']} {user_data['lastname']}",
             'profile_pic': user_data['profile_pic'],
             'address': user_data['address'],
+            'phone_number':user_data['phone'],
             'rent_items': posted_rent_data,
         })
