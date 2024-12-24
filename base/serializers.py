@@ -16,11 +16,6 @@ class RentItemSerializer(serializers.ModelSerializer):
         rent_item = RentItem.objects.create(category = category, **validated_data)
         return rent_item
 
-class UpdateRentItemSerializer(serializers.ModelSerializer):
-    thumbnailImage = serializers.ImageField(required=False)
-    class Meta:
-        model = RentItem
-        fields = ['title','price','thumbnailImage','description','inStock','address','latitude','longitude','rules','category']
 
 class CategorySerializer(serializers.ModelSerializer):
     rent_category = RentItemSerializer(many=True , read_only = True)
