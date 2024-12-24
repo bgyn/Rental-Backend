@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
 from base.models import Categories,RentItem,Booking
@@ -31,9 +32,39 @@ class RentItemView(ListCreateAPIView):
         serializer.save(owner = self.request.user)
 
 
-class RentItemDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = RentItem.verified.all()
-    serializer_class = UpdateRentItemSerializer
+class RentItemDetailView(APIView):
+    def get_object(self,pk):
+        queryset = RentItem.objects.get(pk = pk)
+        return queryset
+
+    def get(self,request,pk):
+        try:
+            queryset = self.get_object(pk)
+            serializer = RentItemSerializer(queryset)
+            return Response(serializer.data)
+        except RentItem.DoesNotExist:
+            return Response({'error':'No rentItem with given id'})
+    
+    def patch(self,request,pk):
+        try:
+            queryset = self.get_object(pk)
+            serializer = RentItemSerializer(queryset,data=request.data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,status=200)
+            return Response(serializer.errors,status=400)
+        except RentItem.DoesNotExist:
+            return Response({'error':'No rentItem with given id'})
+    
+    def delete(self,request,pk):
+        try:
+            queryset = self.get_object(pk)
+            queryset.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except RentItem.DoesNotExist:
+            return Response({'error':'No rentItem with given id'})
+    
+
 
 
 class UserListingView(APIView):
