@@ -1,13 +1,12 @@
 from rest_framework import serializers
-from base.models import Categories,Rules,RentItem,Booking
+from base.models import Categories,RentItem,Booking
 
 class RentItemSerializer(serializers.ModelSerializer):
-    itemRules = serializers.SerializerMethodField(read_only = True)
     category = serializers.PrimaryKeyRelatedField(queryset = Categories.objects.all())
     owner = serializers.SerializerMethodField(read_only = True)
     class Meta:
         model = RentItem
-        fields = ["id",'title','price','thumbnailImage','description','inStock','created','address','latitude','longitude','itemRules','category','owner','status']
+        fields = ["id",'title','price','thumbnailImage','description','inStock','created','address','latitude','longitude','rules','category','owner','status']
 
     def get_owner(self,obj):
         return obj.owner.id
@@ -17,9 +16,11 @@ class RentItemSerializer(serializers.ModelSerializer):
         rent_item = RentItem.objects.create(category = category, **validated_data)
         return rent_item
 
-    def get_itemRules(self,obj):
-        rules = [rule.rule_text for rule in obj.rules.all()]
-        return list(rules)
+class UpdateRentItemSerializer(serializers.ModelSerializer):
+    thumbnailImage = serializers.ImageField(required=False)
+    class Meta:
+        model = RentItem
+        fields = ['title','price','thumbnailImage','description','inStock','address','latitude','longitude','rules','category']
 
 class CategorySerializer(serializers.ModelSerializer):
     rent_category = RentItemSerializer(many=True , read_only = True)
@@ -27,11 +28,6 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Categories
         fields = ["id","category_name",'rent_category']
 
-
-class RuleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Rules
-        fields = ["rule_text"]
 
 
 class BookingSerializer(serializers.ModelSerializer):

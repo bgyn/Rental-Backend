@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
-from base.models import Categories,Rules,RentItem,Booking
-from base.serializers import CategorySerializer,RuleSerializer,RentItemSerializer,BookingSerializer,UpdateBookingStatusSerializer
+from base.models import Categories,RentItem,Booking
+from base.serializers import CategorySerializer,RentItemSerializer,BookingSerializer,UpdateBookingStatusSerializer,UpdateRentItemSerializer
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import status
@@ -14,10 +14,6 @@ class CategoryView(ListCreateAPIView):
     queryset = Categories.objects.all()
     serializer_class = CategorySerializer
     
-
-class RuleView(ListCreateAPIView):
-    queryset = Rules.objects.all()
-    serializer_class = RuleSerializer
 
 
 class RentItemView(ListCreateAPIView):
@@ -37,7 +33,7 @@ class RentItemView(ListCreateAPIView):
 
 class RentItemDetailView(RetrieveUpdateDestroyAPIView):
     queryset = RentItem.verified.all()
-    serializer_class = RentItemSerializer
+    serializer_class = UpdateRentItemSerializer
 
 
 class UserListingView(APIView):

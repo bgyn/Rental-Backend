@@ -10,13 +10,6 @@ class Categories(models.Model):
     def __str__(self):
         return f"{self.category_name}"
 
-# model for rules 
-class Rules(models.Model):
-    rule_text = models.CharField(max_length=255)
-    
-    def __str__(self):
-        return self.rule_text
-
 
 class VerifiedManager(models.Manager):
     def get_queryset(self) -> models.QuerySet:
@@ -41,7 +34,7 @@ class RentItem(models.Model):
     address= models.CharField(max_length=255,null=True, blank=True)
     latitude = models.CharField(max_length=20,null=True, blank=True)
     longitude = models.CharField(max_length=20,null=True, blank=True)
-    rules = models.ManyToManyField(Rules, blank=True)
+    rules = models.TextField(null=True,blank=True)
     status = models.CharField(
         max_length=4,
         choices = Status,
